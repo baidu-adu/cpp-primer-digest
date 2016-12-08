@@ -1,5 +1,7 @@
 # C++ Code Style and Primer Digest
 
+**Note: this is a work in progress.**
+
 This is largely based on
 [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
 If you have time, you should read it. C++ programmer of any level can
@@ -45,18 +47,21 @@ them by hand.
     Google style guide requires
     [header guards](https://google.github.io/styleguide/cppguide.html#The__define_Guard).
     We should prefer `#pragma once` instead.
-    
     *   `#pragma once` is not part of the standard. However, all
         mainstream compilers have been supporting it for years.
     *   Some codebase may require header guards for **consistency**,
         but new code base may not have that constraint.
     *   `#pragma once` reduces the possiblity of bugs (e.g. when
         moving files around), and is argurably more readable.
-    *   Read [detailed justification](cases/pragma_once).
-2.  **Inline Functions**
-    *   **Rule of thumb**: do not inline a function if it is more than 10
-        lines long. Period.
-3.  **#include order**
+    *   [Details and example](cases/pragma_once.md).
+2.  **Forward Declarations**
+
+    See [Google Style Guide](https://google.github.io/styleguide/cppguide.html#Forward_Declarations).
+3.  **Inline Functions**
+    
+    **Rule of thumb**: do not inline a function if it is more than 10
+    lines long.
+4.  **#include order**
     ```c++
     #include "foo/server/fooserver.h"  // corresponding header
 
@@ -73,12 +78,52 @@ them by hand.
     
     All in alphabetic order.
     
+    *   Easy to maintain/read. The maintainer/reader can find the
+        corresponding header file quickly.
+    *   We do not have to stick to this rule strictly, although we
+        need to be **consistent** about the order in our project.
+    
 ## Namespaces
 
 1.  **Unamed Namespace**
-    *   Use them in .cc file to hide functions or variables you do not
-        want expose.
-    *   **Do not** use them in .h files.
+    *   Use them in `.cpp` file to hide functions or variables you do
+        not want expose.
+    *   **Do not** use them in `.h` files.
+    *   Sometimes you may want to expose internal functions or
+        variables just for testing purpose. In this case it is better
+        to declare them in
+        [internal-only namespaces](csaes/internal_only_namespaces.md).
+2.  Never do **using namespace foo;**
+    
+    *   This pollutes the namespace, and can lead to hard-to-resolve
+        compiler errors and bugs.
+    *   If you really have something like
+        `a::really::long::nested::name::space`, you can probably use
+        [namespace alias](http://en.cppreference.com/w/cpp/language/namespace_alias)
+        in a `.cpp` file:
+        
+        ```
+        namespace short_name = a::really::long::nested::name::space;
+        ```
+        
+        Do not use namespace alias in header files except in
+        [internal-only namespaces](cases/internal_only_namespaces.md).
+        This is because such aliases will affect every file that
+        includes this header file.
+3.  Avoid nested namespaces that match well-known top-level namespaces.
+    
+    Namespace collision may happen if you use `util` to refer to
+    `my_library::util` within `namespace my_library`, while there is
+    an existing top-level namespace called `util`. Even if no
+    collision happens, this confuses the reader. Therefore,
+    
+    *   Try not to name your namespace `my_library::util` in this
+        case.
+    *   Refer to the top-level `util` as `::util` to explicitly say
+        "top-level".
+        
+    Common top-level namespaces names that are prone to this are
+    `util`, `base`, `aux`, etc.
     
 ## Classes
 
