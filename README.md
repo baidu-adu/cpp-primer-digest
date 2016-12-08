@@ -92,7 +92,7 @@ them by hand.
     *   Sometimes you may want to expose internal functions or
         variables just for testing purpose. In this case it is better
         to declare them in
-        [internal-only namespaces](csaes/internal_only_namespaces.md).
+        [internal-only namespaces](cases/internal_only_namespaces.md).
 2.  Never do **using namespace foo;**
     
     *   This pollutes the namespace, and can lead to hard-to-resolve
