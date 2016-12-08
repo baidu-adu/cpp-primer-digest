@@ -13,7 +13,7 @@ has clearly stated its
 which provides the **justification** of the rules in the style guide.
 [Dr. Titus Winters](http://alumni.cs.ucr.edu/~titus/) had a very good
 [talk](https://www.youtube.com/watch?v=NOCElcMcFik&t=2481s) on this.
-Some of the goals that worths mentioning, especially for the new C++
+Some of the goals that worth mentioning, especially for the new C++
 programmers are:
 
 1.  Optimize for the **READER**, not the writer.
@@ -22,9 +22,9 @@ programmers are:
     than writing it. 
 2.  Avoid surprising or dangerous constructs.
 
-    Black magics may look awesome, but tends to increase the risk of
-    bugs and incorrectness (not only when you are developing it, but
-    also when you or someone else is maintaining it). "Don't be
+    Black magics may look awesome, but they tend to increase the risk
+    of bugs and incorrectness (not only when you are developing it,
+    but also when you or someone else is maintaining it). "Don't be
     clever".
 3.  Be **consistent** (with existing code).
 
@@ -50,8 +50,8 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
         mainstream compilers have been supporting it for years.
     *   Some codebase may require header guards for **consistency**,
         but new code base may not have that constraint.
-    *   `#pragma once` reduces the possiblity of bugs (e.g. when
-        moving files around), and is argurably more readable.
+    *   `#pragma once` reduces the possibility of bugs (e.g. when
+        moving files around), and is arguably more readable.
     *   [Details and example](cases/pragma_once.md).
 2.  **Forward Declarations**
 
@@ -84,7 +84,7 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
     
 ## Namespaces
 
-1.  **Unamed Namespace**
+1.  **Unnamed Namespace**
     *   Use them in `.cpp` file to hide functions or variables you do
         not want expose.
     *   **Do not** use them in `.h` files.
@@ -137,7 +137,7 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
         often more appropriate. Try to restrict use of inheritance to
         the "is-a" case: Bar subclasses Foo if it can reasonably be
         said that Bar "is a kind of" Foo.
-    *   If you find yourslef wanting to use multiple inheritance,
+    *   If you find yourself wanting to use multiple inheritance,
         **THINK TWICE**.
 3.  **Access Control**
     *   Data members are **private**, except when they are static
@@ -146,12 +146,12 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
         class to be protected when using Google Test).
 4.  **Declaration Order**
     *   `public`, `protected` and then `private`.
-    *   In each section, group simular declarations together, prefer
+    *   In each section, group similar declarations together, prefer
         the order:
             *   `typedef` and `using`
             *   `struct` and `class`
             *   factory functions
-            *   contructors
+            *   constructors
             *   `operator=`
             *   destructors
             *   methods
@@ -165,7 +165,7 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
         way to pass parameters.
     *   For output parameters, pass pointers.
 2.  **Default Argument**
-    *   Not recommended for readablity issue. **Do not use** unless
+    *   Not recommended for readability issue. **Do not use** unless
         you have to.
 3.  **Trailing Return Type Syntax**
     *   When in lambda. Period.
@@ -192,7 +192,7 @@ to
 ## C++ Programmer's Toolbox
 
 There are many available tools for C++, and it is always good to have
-them in your pocket. Some of them helpt enforce the rules
+them in your pocket. Some of them help enforce the rules
 automatically. Use them to free yourself from worrying about the
 format and focus on more important stuff.
 
