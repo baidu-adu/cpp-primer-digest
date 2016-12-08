@@ -1,30 +1,58 @@
-# Google C++ Style Digest
+# C++ Code Style and Primer Digest
 
-Note that the main purpose of style guid is **READABILITY**. The other
-beneficial side effects:
+This is largely based on
+[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
+If you have time, you should read it. C++ programmer of any level can
+learn from it. 
 
-*   less likely to introduce bug
-*   better performance
-*   short code
-*   etc.
+[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
+has clearly stated its
+[goals](https://google.github.io/styleguide/cppguide.html#Goals),
+which provides the **justification** of the rules in the style guide.
+[Dr. Titus Winters](http://alumni.cs.ucr.edu/~titus/) had a very good
+[talk](https://www.youtube.com/watch?v=NOCElcMcFik&t=2481s) on this.
+Some of the goals that worths mentioning, especially for the new C++
+programmers are:
 
+1.  Optimize for the **READER**, not the writer.
+
+    Realize that most of our time will be spent on reading the code
+    than writing it. 
+2.  Avoid surprising or dangerous constructs.
+
+    Black magics may look awesome, but tends to increase the risk of
+    bugs and incorrectness (not only when you are developing it, but
+    also when you or someone else is maintaining it). "Don't be
+    clever".
+3.  Be **consistent** (with existing code).
+
+    This contributes to both the readability and the possibility of
+    having automation tools.
+    
+We will restrain ourselves from talking much about format such as
+indentation. It is not as important, and seriously you should make
+good use of your favorite code editor, and the handy
+[clang-format](http://clang.llvm.org/docs/ClangFormat.html).
+
+In general, there are many available tools. Using them to enforce the
+rules automatically is usually much better than having to maintain
+them by hand.
+    
 ## Header Files
 
-1.  **Guard**
-    *   Google style guide
-        requires
-        [header guards](https://google.github.io/styleguide/cppguide.html#The__define_Guard).
-        We could use `#pragma once` instead.
-    *   The drawbacks of `#pragma once` are that it is not **part of
-        the standard**, and they works differently in the subtle case
-        when we intend to *include either one of them*. However, I
-        would argue that `#pragma once` is now very well supported,
-        and for the latter case, it usually suggests that you need a
-        better design.
-    *   On the other hand `#pragma once` reduces the possiblity of
-        bugs (when moving files around), and is argurably more
-        readable.
-    *   **Decision**: Prefer `#pragma once` but allow header guards?
+1.  **Header guards** vs **#pragma once**
+
+    Google style guide requires
+    [header guards](https://google.github.io/styleguide/cppguide.html#The__define_Guard).
+    We should prefer `#pragma once` instead.
+    
+    *   `#pragma once` is not part of the standard. However, all
+        mainstream compilers have been supporting it for years.
+    *   Some codebase may require header guards for **consistency**,
+        but new code base may not have that constraint.
+    *   `#pragma once` reduces the possiblity of bugs (e.g. when
+        moving files around), and is argurably more readable.
+    *   Read [detailed justification](cases/pragma_once).
 2.  **Inline Functions**
     *   **Rule of thumb**: do not inline a function if it is more than 10
         lines long. Period.
