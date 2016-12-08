@@ -35,7 +35,7 @@ We will restrain ourselves from talking much about format such as
 indentation. It is not as important, and seriously you should make
 good use of your favorite code editor, and the
 handy [clang-format](http://clang.llvm.org/docs/ClangFormat.html).
-See [C++ Programmer's Toolbox](#c++-programmer-s-toolbox) for details.
+See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
 
 
     
