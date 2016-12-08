@@ -33,12 +33,11 @@ programmers are:
     
 We will restrain ourselves from talking much about format such as
 indentation. It is not as important, and seriously you should make
-good use of your favorite code editor, and the handy
-[clang-format](http://clang.llvm.org/docs/ClangFormat.html).
+good use of your favorite code editor, and the
+handy [clang-format](http://clang.llvm.org/docs/ClangFormat.html).
+See [C++ Programmer's Toolbox](#c++-programmer-s-toolbox) for details.
 
-In general, there are many available tools. Using them to enforce the
-rules automatically is usually much better than having to maintain
-them by hand.
+
     
 ## Header Files
 
@@ -189,6 +188,18 @@ them by hand.
 I think for naming we should stick
 to
 [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Naming).
+
+## C++ Programmer's Toolbox
+
+There are many available tools for C++, and it is always good to have
+them in your pocket. Some of them helpt enforce the rules
+automatically. Use them to free yourself from worrying about the
+format and focus on more important stuff.
+
+*   [clang](http://clang.llvm.org/)
+*   [clang-format](http://clang.llvm.org/docs/ClangFormat.html)
+*   [asan](https://github.com/google/sanitizers/wiki/AddressSanitizer) (Address Sanitizer)
+*   [rtags](https://github.com/Andersbakken/rtags)
 
 ## Other
 
