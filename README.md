@@ -262,6 +262,7 @@ format and focus on more important stuff.
     is huge enough to compensate the loss.
 1.  `auto` is permitted when it promotes readability.
 1.  `switch` cases may have scopes:
+
     ```c++
     switch (var) {
       case 0: {  // 2 space indent
