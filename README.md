@@ -183,6 +183,51 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
     *   **Solution**: Use factory functions, or use `Init()` function
         to do the lift.
         
+## Tricks
+
+1.  **Thread-safe Local Static Initialization**
+
+    In the following function:
+    
+    ```cpp
+    void SomeFunction() {
+      static SomeType some_static_variable();
+      ...
+    }
+    ```
+    
+    If multiple control flows enter the function concurrently, is
+    there a risk of **race** condition?
+    
+    The answer is **no**,
+    if
+    [compiled with C++11](http://stackoverflow.com/questions/8102125/is-local-static-variable-initialization-thread-safe-in-c11).
+    
+    In fact, if control enters the **declaration** concurrently while
+    the variable is being initialized, the concurrent execution shall
+    wait for **completion** of the initialization.
+    
+    This property can be taken advantage of to do more complicated
+    object (lazy) initialization in a thread-safe way, together with
+    the
+    [lambda functions](http://en.cppreference.com/w/cpp/language/lambda).
+    For example, the following code initializes a local static vector
+    in a thread-safe way.
+    
+    ```cpp
+    void SomeFunction() {
+      static std::unique_ptr<vector<int>> my_list([]() {
+        // Note that this lambda function is called within the declaration,
+        // therefore is thread-safe.
+        vector<int> *tmp_list = new vector<int>();
+        tmp_list.push_back(1);
+        tmp_list.push_back(2);
+        ...
+        return tmp_list;
+      }());
+    }
+    ```
+        
 ## Naming
 
 I think for naming we should stick
@@ -203,16 +248,20 @@ format and focus on more important stuff.
 
 ## Other
 
+1.  Use the ones in standard library rather than the third-party
+    implementation (e.g. boost) if you have a choice. This helps
+    reduce both runtime dependencies and compile-time dependencies,
+    and it promotes readability.
 1.  Use `const` whenever it makes sense. With C++11, `constexpr` is a
     better choice for some uses of `const`
-2.  `<stdint.h>` defines types like `int16_t`, `uint32_t`, `int64_t`,
+1.  `<stdint.h>` defines types like `int16_t`, `uint32_t`, `int64_t`,
     etc. You should always use those in preference to short, unsigned
     long long and the like, when you need a guarantee on the size of
     an integer.
-3.  Macros damage readability. **Do not use** them unless the benefit
-    is huge enough to compensate the damage.
-4.  `auto` is permitted when it promotes readability.
-5.  `switch` cases may have scopes:
+1.  Macros damage readability. **Do not use** them unless the benefit
+    is huge enough to compensate the loss.
+1.  `auto` is permitted when it promotes readability.
+1.  `switch` cases may have scopes:
     ```c++
     switch (var) {
       case 0: {  // 2 space indent
