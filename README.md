@@ -169,7 +169,32 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
         you have to.
 3.  **Trailing Return Type Syntax**
     *   When in lambda. Period.
-
+4.  **Return Value of Complicated Type**
+    
+    Returning values of simple types such as `int`, `int64_t`, `bool`
+    may involves **copy**, but we hardly care. However it is rather
+    important to **avoid copy** when returning values of complicated
+    types because it can be rather expensive, e.g. `std::vector<int>`.
+    
+    One of the common pattern is to pass in a `std::vector<int>`
+    pointer as parameter and construct it in place as below:
+    
+    ```c++
+    void DoWork(..., std::vector<int> *result) {
+        ...
+        result->push_back(...);
+        ...
+        result->push_back(...);
+        ...
+    }
+    ```
+    
+    I think this pattern should be discouraged in favor
+    of
+    [return value optimization](cases/return_value_optimization.md),
+    because the latter is not only less error-prone, but also **much
+    more readable**.
+    
 ## Exceptions
 
 1.  **DO NOT** throw exceptions. Returns error code, and let the upper
