@@ -56,12 +56,6 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
 2.  **Forward Declarations**
 
     See [Google Style Guide](https://google.github.io/styleguide/cppguide.html#Forward_Declarations).
-
-    An exception for this rule is:
-    
-    * Use a Private Data Class for exposed API, especially for shared library.
-       * look more details in [Expose API/Shared Library].
-
 3.  **Inline Functions**
     
     **Rule of thumb**: do not inline a function if it is more than 10
@@ -91,11 +85,10 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
 ## Namespaces
 
 1.  **Unnamed Namespace**
-    *   ** Do not** Use them in `.cpp`/`.h` files. Using `static` for hidding
-        symbols in source files. The anonymous namespace will generate a namespace
-        when compiling, and could generate a different namespace name each time.
-        It will breaks the ABIs, make dubug harder.
-    *   Sometimes you may want to expose internal functions or
+    *   Use them in `.cpp` file to hide functions or variables you do
+        not want expose.
+    *   **Do not** use them in `.h` files.
+    *   Sometimes you may want to expose internal functions or
         variables just for testing purpose. In this case it is better
         to declare them in
         [internal-only namespaces](cases/internal_only_namespaces.md).
@@ -136,8 +129,6 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
 1.  **Copy Constructor and Move Constructor**
     *   If you provide copy constructor and/or move constructor,
         provide the corresponding `operator=` overload as well.
-    *   Class should be disable copy/move by default.
-    
 2.  **Inheritance**
     *   All inheritance should be **public**. If you want to do
         private inheritance, you should be including an instance of
@@ -170,17 +161,14 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
 
 1.  **Parameters**
     *   Ordering: Input and then Output.
-    *   Either use const references or pointer for non-fundamental types. The stl types are not fundamental types.
-    *   Use **const reference** for read only parameter. Use **pointer** for writable parameter.
-    
+    *   All **references** must be **const**, and this is the recommended
+        way to pass parameters.
+    *   For output parameters, pass pointers.
 2.  **Default Argument**
-    *   Not recommended for readability/ABI issue. **Do not use** unless
+    *   Not recommended for readability issue. **Do not use** unless
         you have to.
-
 3.  **Trailing Return Type Syntax**
     *   When in lambda. Period.
-    *   When using template, and the output type should be deducted by input types.
-    
 4.  **Return Value of Complicated Type**
     
     Returning values of simple types such as `int`, `int64_t`, `bool`
@@ -201,14 +189,12 @@ See [C++ Programmer's Toolbox](#c-programmers-toolbox) for details.
     }
     ```
     
-    Also we could return a smart pointer for complex type, such as unique_ptr<std::vector<int>>.
-    
     I think this pattern should be discouraged in favor
     of
     [return value optimization](cases/return_value_optimization.md),
     because the latter is not only less error-prone, but also **much
     more readable**.
-
+    
 ## Exceptions
 
 1.  **DO NOT** throw exceptions. Returns error code, and let the upper
@@ -273,26 +259,6 @@ I think for naming we should stick
 to
 [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Naming).
 
-
-## Shared Library/API
-
-* Please use C-API as the exposed API for most library.
-   * Because C-API has a standard ABI in many operating system. All standard C compiler
-     will compile same C function/variable to same symbol in asm.
-   
-   * Try to use void\* for C++ object instance. Try to use function pointer simulate
-     member function.
-     
-   * [Example](cases/c_api_for_cpp.md)
-   
-* If you really want to expose CPP API, the following rules should be followed.
-   * Do not use virtual method.
-     * The virtual method will change the method name to an offset in vtable. And the offset is
-       easily changed if the header could be changed. Then break the ABI compatibility.
-     * Another guide for virtual method in API is that always creates new virtual method at the END OF CLASS declaration. And do not change older declarations. It will get method as `create`, `createEx`, `createEx2`, `...`, and it seems the virtual method is not necessary for this situations.
-   * Use [private data class](https://en.wikipedia.org/wiki/Private_class_data_pattern), instead of directly declare member field in private.
-
-
 ## C++ Programmer's Toolbox
 
 There are many available tools for C++, and it is always good to have
@@ -311,17 +277,15 @@ format and focus on more important stuff.
     implementation (e.g. boost) if you have a choice. This helps
     reduce both runtime dependencies and compile-time dependencies,
     and it promotes readability.
-
+1.  Use `const` whenever it makes sense. With C++11, `constexpr` is a
+    better choice for some uses of `const`
 1.  `<stdint.h>` defines types like `int16_t`, `uint32_t`, `int64_t`,
     etc. You should always use those in preference to short, unsigned
     long long and the like, when you need a guarantee on the size of
     an integer.
-
 1.  Macros damage readability. **Do not use** them unless the benefit
     is huge enough to compensate the loss.
-
 1.  `auto` is permitted when it promotes readability.
-
 1.  `switch` cases may have scopes:
 
     ```c++
@@ -337,30 +301,5 @@ format and focus on more important stuff.
       default: {
         assert(false);
       }
-    } 
+    }
     ```
-
-1. Use smart_pointer as much as you can. Try unique_ptr rather than shared_ptr.
-
-   * Smart Pointer is a better way to handle memory alloc/free then manually new/delete.
-      * especially in multi-thread situation.
-   * unique_ptr is much lighter than shared_ptr.
-      * shared_ptr maintain a mutex, a reference count. Create and destory a shared_ptr could be a little bit slower than unique_ptr.
-      * unique_ptr is better for multi-thread condition. It ensures that there are no other thread using this data right now.
-   * Use unique_ptr<int[] > rather than vector<int> for array that will not grow.
-      * unique_ptr is easier to return.
-   * Use weak_ptr to avoid circle reference in shared_ptr.
-
-1. Use **const** as much as you can. With C++11, `constexpr` is a
-    better choice for some uses of `const`
-
-
-   * It will let compiler to check whether program is correct or not, rather than die in runtime.
-   * Not just for parameter, but also for member function.
-     * **mutalbe** key word may be used in this situation.
-
-1. Use standard library as much as you can.
-
-   * **Do not** write a sort algorithm except you know what you are doing. For most situation, **std::algorithm** is your friend. And the implementation in **std** is good in general.
-   * Use **std::thread** rather than pthread. Because C++ std library should be avaliable for most platform.
- 
